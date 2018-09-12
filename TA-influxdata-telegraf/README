@@ -1,4 +1,6 @@
- ___        __ _               _       _        
+
+```
+ ___        __ _               _       _
 |_ _|_ __  / _| |_   ___  ____| | __ _| |_ __ _ 
  | || '_ \| |_| | | | \ \/ / _` |/ _` | __/ _` |
  | || | | |  _| | |_| |>  < (_| | (_| | || (_| |
@@ -9,10 +11,14 @@
   | |/ _ \ |/ _ \/ _` | '__/ _` | |_ 
   | |  __/ |  __/ (_| | | | (_| |  _|
   |_|\___|_|\___|\__, |_|  \__,_|_|  
-                 |___/               
+                 |___/
 
-The plugin-driven server agent for collecting and reporting metrics by Influxdata !
+```
 
+## The plugin-driven server agent for collecting and reporting metrics by Influxdata !
+
+
+```
  _____    _                       __
 |_   _|__| | ___  __ _ _ __ __ _ / _|
   | |/ _ \ |/ _ \/ _` | '__/ _` | |_
@@ -25,16 +31,148 @@ The plugin-driven server agent for collecting and reporting metrics by Influxdat
 | | | | \__ \ || (_| | | | (_| | |_| | (_) | | | |
 |_|_| |_|___/\__\__,_|_|_|\__,_|\__|_|\___/|_| |_|
 
-The installation of Telegraf is really straightforward, consult:
+```
 
-https://github.com/influxdata/telegraf
+## Telegraf installation, configuration and start
 
-A minimal configuration to monitor Operating System metrics:
+### The installation of Telegraf is really straightforward, consult:
+
+- https://github.com/influxdata/telegraf
+
+### A minimal configuration to monitor Operating System metrics:
 
 - https://docs.influxdata.com/chronograf/latest/guides/using-precreated-dashboards/#system
 
 The output configuration depends on the deployment you choose to use to ingest metrics in Splunk, consult the next sections.
 
+### Example of a minimal telegraf.conf configuration that monitors Operating System metrics
+
+```
+
+# Read metrics about cpu usage
+[[inputs.cpu]]
+  ## Whether to report per-cpu stats or not
+  percpu = true
+  ## Whether to report total system cpu stats or not
+  totalcpu = true
+  ## If true, collect raw CPU time metrics.
+  collect_cpu_time = false
+  ## If true, compute and report the sum of all non-idle CPU states.
+  report_active = false
+
+# Read metrics about disk usage by mount point
+[[inputs.disk]]
+  ## By default stats will be gathered for all mount points.
+  ## Set mount_points will restrict the stats to only the specified mount points.
+  # mount_points = ["/"]
+
+  ## Ignore mount points by filesystem type.
+  ignore_fs = ["tmpfs", "devtmpfs", "devfs"]
+
+# Read metrics about disk IO by device
+[[inputs.diskio]]
+  ## By default, telegraf will gather stats for all devices including
+  ## disk partitions.
+  ## Setting devices will restrict the stats to the specified devices.
+  # devices = ["sda", "sdb", "vd*"]
+  ## Uncomment the following line if you need disk serial numbers.
+  # skip_serial_number = false
+  #
+  ## On systems which support it, device metadata can be added in the form of
+  ## tags.
+  ## Currently only Linux is supported via udev properties. You can view
+  ## available properties for a device by running:
+  ## 'udevadm info -q property -n /dev/sda'
+  # device_tags = ["ID_FS_TYPE", "ID_FS_USAGE"]
+  #
+  ## Using the same metadata source as device_tags, you can also customize the
+  ## name of the device via templates.
+  ## The 'name_templates' parameter is a list of templates to try and apply to
+  ## the device. The template may contain variables in the form of '$PROPERTY' or
+  ## '${PROPERTY}'. The first template which does not contain any variables not
+  ## present for the device is used as the device name tag.
+  ## The typical use case is for LVM volumes, to get the VG/LV name instead of
+  ## the near-meaningless DM-0 name.
+  # name_templates = ["$ID_FS_LABEL","$DM_VG_NAME/$DM_LV_NAME"]
+
+# Get kernel statistics from /proc/stat
+[[inputs.kernel]]
+  # no configuration
+
+
+# Read metrics about memory usage
+[[inputs.mem]]
+  # no configuration
+
+
+# Get the number of processes and group them by status
+[[inputs.processes]]
+  # no configuration
+
+
+# Read metrics about swap memory usage
+[[inputs.swap]]
+  # no configuration
+
+
+# Read metrics about system load & uptime
+[[inputs.system]]
+  # no configuration
+
+# # Read metrics about network interface usage
+[[inputs.net]]
+#   ## By default, telegraf gathers stats from any up interface (excluding loopback)
+#   ## Setting interfaces will tell it to gather these explicit interfaces,
+#   ## regardless of status.
+#   ##
+#   # interfaces = ["eth0"]
+#   ##
+#   ## On linux systems telegraf also collects protocol stats.
+#   ## Setting ignore_protocol_stats to true will skip reporting of protocol metrics.
+#   ##
+#   # ignore_protocol_stats = false
+#   ##
+
+# # Read TCP metrics such as established, time wait and sockets counts.
+[[inputs.netstat]]
+#   # no configuration
+
+# # Monitor process cpu and memory usage
+[[inputs.procstat]]
+#   ## PID file to monitor process
+#   pid_file = "/var/run/nginx.pid"
+#   ## executable name (ie, pgrep <exe>)
+#   # exe = "nginx"
+#   ## pattern as argument for pgrep (ie, pgrep -f <pattern>)
+#   # pattern = "nginx"
+#   ## user as argument for pgrep (ie, pgrep -u <user>)
+    user = "guilhem"
+#   ## Systemd unit name
+#   # systemd_unit = "nginx.service"
+#   ## CGroup name or path
+#   # cgroup = "systemd/system.slice/nginx.service"
+#
+#   ## override for process_name
+#   ## This is optional; default is sourced from /proc/<pid>/status
+#   # process_name = "bar"
+#
+#   ## Field name prefix
+#   # prefix = ""
+#
+#   ## Add PID as a tag instead of a field; useful to differentiate between
+#   ## processes whose tags are otherwise the same.  Can create a large number
+#   ## of series, use judiciously.
+#   # pid_tag = false
+#
+#   ## Method to use when finding process IDs.  Can be one of 'pgrep', or
+#   ## 'native'.  The pgrep finder calls the pgrep executable in the PATH while
+#   ## the native finder performs the search directly in a manor dependent on the
+#   ## platform.  Default is 'pgrep'
+#   # pid_finder = "pgrep"
+
+```
+
+```
  _____ ____ ____       __  _____ ____ ____      ____ ____  _
 |_   _/ ___|  _ \     / / |_   _/ ___|  _ \    / ___/ ___|| |
   | || |   | |_) |   / /    | || |   | |_) |___\___ \___ \| |
@@ -48,6 +186,10 @@ The output configuration depends on the deployment you choose to use to ingest m
 |_|_| |_| .__/ \__,_|\__|___/
         |_|
 
+```
+
+## Splunk deployment with TCP inputs
+
 The deployment is very simple and can be described as:
 
 Telegraf agents --> TCP or TCP over SSL --> Splunk TCP inputs
@@ -58,21 +200,24 @@ Splunk components availability. (HAProxy, Nginx, F5, whatsoever...)
 The data output format used by Telegraf agents is the "Graphite" format with tag support enable.
 This is simple, beautiful, accurate and allows the management of any number of dimensions.
 
-Example of a tcp input definition:
+### Example of a tcp input definition:
 
+```
 inputs.conf
 
 [tcp://2003]
 connection_host = dns
 index = telegraf
 sourcetype = tcp:telegraf:graphite
+```
 
 Telegraf configuration:
 
-The Telegraf configuration is really simple and relies on defining your ouput:
+### The Telegraf configuration is really simple and relies on defining your ouput:
 
 Example:
 
+```
 [[outputs.graphite]]
   ## TCP endpoint for your graphite instance.
   ## If multiple endpoints are configured, the output will be load balanced.
@@ -89,20 +234,26 @@ Example:
 
   ## timeout in seconds for the write connection to graphite
   timeout = 2
+```
 
 Push this configuration to your Telegraf agents, et voila.
 
 Check data availability in Splunk:
 
+```
 | mstats values(_dims) as dimensions values(metric_name) as metric_name where index=telegraf metric_name=*
+```
 
-
+```
  _  __    _    _  _______ _      _                       _   _
 | |/ /   / \  | |/ /  ___/ \    (_)_ __   __ _  ___  ___| |_(_) ___  _ __
 | ' /   / _ \ | ' /| |_ / _ \   | | '_ \ / _` |/ _ \/ __| __| |/ _ \| '_ \
 | . \  / ___ \| . \|  _/ ___ \  | | | | | (_| |  __/\__ \ |_| | (_) | | | |
 |_|\_\/_/   \_\_|\_\_|/_/   \_\ |_|_| |_|\__, |\___||___/\__|_|\___/|_| |_|
                                          |___/
+```
+
+## Splunk deployment with Kafka
 
 If you are using Kafka, or consider using it, producing Telegraf metrics to Kafka makes a lot of sense.
 
@@ -124,6 +275,7 @@ Configuring Kafka connect:
 
 - The Kafka connect properties needs to use the "String" converter, the following example start Kafka connect with the relevant configuration:
 
+```
 # connect-distributed.properties
 
 # These are defaults. This file just demonstrates how to override some settings.
@@ -154,6 +306,7 @@ status.storage.partitions=5
 rest.port=8082
 # The Hostname & Port that will be given out to other workers to connect to i.e. URLs that are routable from other servers.
 # rest.advertised.host.name=kafka-connect-1
+```
 
 Apply the following command against Kafka connect running the Splunk Kafka sink connector (https://splunkbase.splunk.com/app/3862)
 
@@ -163,6 +316,7 @@ Apply the following command against Kafka connect running the Splunk Kafka sink 
 - replace the HEC destination
 - adapt any other configuration item up to your needs
 
+```
 curl localhost:8082/connectors -X POST -H "Content-Type: application/json" -d '{
 "name": "kafka-connect-telegraf",
 "config": {
@@ -188,11 +342,13 @@ curl localhost:8082/connectors -X POST -H "Content-Type: application/json" -d '{
 "splunk.hec.track.data": "true"
 }
 }'
+```
 
-## telegraf output configuration:
+### telegraf output configuration:
 
 Configure your Telegraf agents to send data directly to the Kafka broker in graphite format with tag support:
 
+```
 [[outputs.kafka]]
   ## URLs of kafka brokers
   brokers = ["kafka-1:19092","kafka-2:29092","kafka-3:39092"]
@@ -200,10 +356,13 @@ Configure your Telegraf agents to send data directly to the Kafka broker in grap
   topic = "telegraf"
   data_format = "graphite"
   graphite_tag_support = true
+```
 
 Et voila. Congratulations, you have built a massively scalable, distributable, open and resilient metric collection infrastructure.
 
 Check data availability in Splunk:
 
+```
 | mstats values(_dims) as dimensions values(metric_name) as metric_name where index=telegraf metric_name=*
 
+```
