@@ -1,0 +1,16 @@
+# .ignore
+
+# local
+*/local
+
+# Pycharm IDLE
+.idea
+
+# metadata/local.meta
+*/metadata/local.meta
+
+# Read the doc & Sphinx
+docs/_build
+docs/_static
+docs/_templates
+
