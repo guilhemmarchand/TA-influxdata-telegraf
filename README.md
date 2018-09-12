@@ -71,12 +71,14 @@ This is simple, beautiful, accurate and allows the management of any number of d
 
 Example of a tcp input definition:
 
+```
 inputs.conf
 
 [tcp://2003]
 connection_host = dns
 index = telegraf
 sourcetype = tcp:telegraf:graphite
+```
 
 Telegraf configuration:
 
@@ -84,6 +86,7 @@ The Telegraf configuration is really simple and relies on defining your ouput:
 
 Example:
 
+```
 [[outputs.graphite]]
   ## TCP endpoint for your graphite instance.
   ## If multiple endpoints are configured, the output will be load balanced.
@@ -100,12 +103,15 @@ Example:
 
   ## timeout in seconds for the write connection to graphite
   timeout = 2
+```
 
 Push this configuration to your Telegraf agents, et voila.
 
 Check data availability in Splunk:
 
+```
 | mstats values(_dims) as dimensions values(metric_name) as metric_name where index=telegraf metric_name=*
+```
 
 ```
  _  __    _    _  _______ _      _                       _   _
@@ -136,6 +142,7 @@ Configuring Kafka connect:
 
 - The Kafka connect properties needs to use the "String" converter, the following example start Kafka connect with the relevant configuration:
 
+```
 # connect-distributed.properties
 
 # These are defaults. This file just demonstrates how to override some settings.
@@ -166,6 +173,7 @@ status.storage.partitions=5
 rest.port=8082
 # The Hostname & Port that will be given out to other workers to connect to i.e. URLs that are routable from other servers.
 # rest.advertised.host.name=kafka-connect-1
+```
 
 Apply the following command against Kafka connect running the Splunk Kafka sink connector (https://splunkbase.splunk.com/app/3862)
 
@@ -175,6 +183,7 @@ Apply the following command against Kafka connect running the Splunk Kafka sink 
 - replace the HEC destination
 - adapt any other configuration item up to your needs
 
+```
 curl localhost:8082/connectors -X POST -H "Content-Type: application/json" -d '{
 "name": "kafka-connect-telegraf",
 "config": {
@@ -200,11 +209,13 @@ curl localhost:8082/connectors -X POST -H "Content-Type: application/json" -d '{
 "splunk.hec.track.data": "true"
 }
 }'
+```
 
 ## telegraf output configuration:
 
 Configure your Telegraf agents to send data directly to the Kafka broker in graphite format with tag support:
 
+```
 [[outputs.kafka]]
   ## URLs of kafka brokers
   brokers = ["kafka-1:19092","kafka-2:29092","kafka-3:39092"]
@@ -212,6 +223,7 @@ Configure your Telegraf agents to send data directly to the Kafka broker in grap
   topic = "telegraf"
   data_format = "graphite"
   graphite_tag_support = true
+```
 
 Et voila. Congratulations, you have built a massively scalable, distributable, open and resilient metric collection infrastructure.
 
