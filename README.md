@@ -1,4 +1,6 @@
- ___        __ _               _       _        
+
+```
+ ___        __ _               _       _
 |_ _|_ __  / _| |_   ___  ____| | __ _| |_ __ _ 
  | || '_ \| |_| | | | \ \/ / _` |/ _` | __/ _` |
  | || | | |  _| | |_| |>  < (_| | (_| | || (_| |
@@ -9,10 +11,14 @@
   | |/ _ \ |/ _ \/ _` | '__/ _` | |_ 
   | |  __/ |  __/ (_| | | | (_| |  _|
   |_|\___|_|\___|\__, |_|  \__,_|_|  
-                 |___/               
+                 |___/
+
+```
 
 The plugin-driven server agent for collecting and reporting metrics by Influxdata !
 
+
+```
  _____    _                       __
 |_   _|__| | ___  __ _ _ __ __ _ / _|
   | |/ _ \ |/ _ \/ _` | '__/ _` | |_
@@ -25,6 +31,8 @@ The plugin-driven server agent for collecting and reporting metrics by Influxdat
 | | | | \__ \ || (_| | | | (_| | |_| | (_) | | | |
 |_|_| |_|___/\__\__,_|_|_|\__,_|\__|_|\___/|_| |_|
 
+```
+
 The installation of Telegraf is really straightforward, consult:
 
 https://github.com/influxdata/telegraf
@@ -35,6 +43,7 @@ A minimal configuration to monitor Operating System metrics:
 
 The output configuration depends on the deployment you choose to use to ingest metrics in Splunk, consult the next sections.
 
+```
  _____ ____ ____       __  _____ ____ ____      ____ ____  _
 |_   _/ ___|  _ \     / / |_   _/ ___|  _ \    / ___/ ___|| |
   | || |   | |_) |   / /    | || |   | |_) |___\___ \___ \| |
@@ -47,6 +56,8 @@ The output configuration depends on the deployment you choose to use to ingest m
 | | | | | |_) | |_| | |_\__ \
 |_|_| |_| .__/ \__,_|\__|___/
         |_|
+
+```
 
 The deployment is very simple and can be described as:
 
@@ -96,13 +107,14 @@ Check data availability in Splunk:
 
 | mstats values(_dims) as dimensions values(metric_name) as metric_name where index=telegraf metric_name=*
 
-
+```
  _  __    _    _  _______ _      _                       _   _
 | |/ /   / \  | |/ /  ___/ \    (_)_ __   __ _  ___  ___| |_(_) ___  _ __
 | ' /   / _ \ | ' /| |_ / _ \   | | '_ \ / _` |/ _ \/ __| __| |/ _ \| '_ \
 | . \  / ___ \| . \|  _/ ___ \  | | | | | (_| |  __/\__ \ |_| | (_) | | | |
 |_|\_\/_/   \_\_|\_\_|/_/   \_\ |_|_| |_|\__, |\___||___/\__|_|\___/|_| |_|
                                          |___/
+```
 
 If you are using Kafka, or consider using it, producing Telegraf metrics to Kafka makes a lot of sense.
 
@@ -205,5 +217,7 @@ Et voila. Congratulations, you have built a massively scalable, distributable, o
 
 Check data availability in Splunk:
 
+```
 | mstats values(_dims) as dimensions values(metric_name) as metric_name where index=telegraf metric_name=*
 
+```
