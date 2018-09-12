@@ -15,7 +15,7 @@
 
 ```
 
-The plugin-driven server agent for collecting and reporting metrics by Influxdata !
+## The plugin-driven server agent for collecting and reporting metrics by Influxdata !
 
 
 ```
@@ -32,6 +32,8 @@ The plugin-driven server agent for collecting and reporting metrics by Influxdat
 |_|_| |_|___/\__\__,_|_|_|\__,_|\__|_|\___/|_| |_|
 
 ```
+
+## Telegraf installation, configuration and start
 
 The installation of Telegraf is really straightforward, consult:
 
@@ -58,6 +60,8 @@ The output configuration depends on the deployment you choose to use to ingest m
         |_|
 
 ```
+
+## Splunk deployment with TCP inputs
 
 The deployment is very simple and can be described as:
 
@@ -121,6 +125,8 @@ Check data availability in Splunk:
 |_|\_\/_/   \_\_|\_\_|/_/   \_\ |_|_| |_|\__, |\___||___/\__|_|\___/|_| |_|
                                          |___/
 ```
+
+## Splunk deployment with Kafka
 
 If you are using Kafka, or consider using it, producing Telegraf metrics to Kafka makes a lot of sense.
 
@@ -211,7 +217,7 @@ curl localhost:8082/connectors -X POST -H "Content-Type: application/json" -d '{
 }'
 ```
 
-## telegraf output configuration:
+### telegraf output configuration:
 
 Configure your Telegraf agents to send data directly to the Kafka broker in graphite format with tag support:
 
