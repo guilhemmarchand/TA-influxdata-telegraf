@@ -17,6 +17,14 @@
 
 ## The plugin-driven server agent for collecting and reporting metrics by Influxdata !
 
+The Technology Addon for Influxdata Telegraf provides indexing time parsing definitions and pre-built panels to ingest Telegraf metrics to Splunk metric store.
+
+The TA is only required at indexing time (Indexers and Intermediate Heavy Forwarders) if you ingest metrics over TCP inputs or Kafka.
+
+Starting Telegraf Version 1.8, you can use a builtin http outputs that sends metrics to the HTTP Events Collector.
+
+The TA is only required on search heads if you intend to use pre-built panels.
+
 
 ```
  _____    _                       __
@@ -170,6 +178,84 @@ The output configuration depends on the deployment you choose to use to ingest m
 #   ## platform.  Default is 'pgrep'
 #   # pid_finder = "pgrep"
 
+```
+
+```
+ _   _ _____ _____ ____    _____                 _
+| | | |_   _|_   _|  _ \  | ____|_   _____ _ __ | |_ ___
+| |_| | | |   | | | |_) | |  _| \ \ / / _ \ '_ \| __/ __|
+|  _  | | |   | | |  __/  | |___ \ V /  __/ | | | |_\__ \
+|_| |_| |_|   |_| |_|     |_____| \_/ \___|_| |_|\__|___/
+
+  ____      _ _           _                __  _   _ _____ ____  __
+ / ___|___ | | | ___  ___| |_ ___  _ __   / / | | | | ____/ ___| \ \
+| |   / _ \| | |/ _ \/ __| __/ _ \| '__| | |  | |_| |  _|| |      | |
+| |__| (_) | | |  __/ (__| || (_) | |    | |  |  _  | |__| |___   | |
+ \____\___/|_|_|\___|\___|\__\___/|_|    | |  |_| |_|_____\____|  | |
+                                          \_\                    /_/
+
+```
+
+## Splunk deployment with HEC (available with Telegraf starting version 1.8)
+
+Telegraf agents --> HTTP over SSL --> Splunk HEC inputs
+
+With Telegraf starting version 1.8, you can send metrics directly from Telegraf to HTTP Events Collector using the
+excellent serializer leveraging the http Telegraf output.
+
+This is extremely simple, scalable and reliable.
+
+### Example of an HEC input definition:
+
+```
+inputs.conf
+
+[http://Telegraf]
+disabled = 0
+index = telegraf
+indexes = telegraf
+token = c386d4c8-8b50-4178-be76-508dca2f19e2
+```
+
+Telegraf configuration:
+
+### The Telegraf configuration is really simple and relies on defining your ouput:
+
+Example:
+
+```
+[[outputs.http]]
+   ## URL is the address to send metrics to
+   url = "https://mysplunk.domain.com:8088/services/collector"
+    ## Timeout for HTTP message
+   # timeout = "5s"
+    ## Optional TLS Config
+   # tls_ca = "/etc/telegraf/ca.pem"
+   # tls_cert = "/etc/telegraf/cert.pem"
+   # tls_key = "/etc/telegraf/key.pem"
+   ## Use TLS but skip chain & host verification
+   insecure_skip_verify = true
+    ## Data format to output.
+   ## Each data format has it's own unique set of configuration options, read
+   ## more about them here:
+   ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_OUTPUT.md
+   data_format = "splunkmetric"
+    ## Provides time, index, source overrides for the HEC
+   splunkmetric_hec_routing = true
+    ## Additional HTTP headers
+    [outputs.http.headers]
+   # Should be set manually to "application/json" for json data_format
+      Content-Type = "application/json"
+      Authorization = "Splunk c386d4c8-8b50-4178-be76-508dca2f19e2"
+      X-Splunk-Request-Channel = "c386d4c8-8b50-4178-be76-508dca2f19e2"
+```
+
+Push this configuration to your Telegraf agents, et voila.
+
+Check data availability in Splunk:
+
+```
+| mstats values(_dims) as dimensions values(metric_name) as metric_name where index=telegraf metric_name=*
 ```
 
 ```
