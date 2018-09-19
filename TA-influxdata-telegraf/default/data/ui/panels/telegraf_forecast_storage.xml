@@ -1,0 +1,30 @@
+<panel>
+    <chart>
+        <title>Storage usage (GB) prediction for next 3 months</title>
+        <search>
+          <query>
+| mstats latest(_value) as value where index="telegraf" metric_name=disk.used OR metric_name=disk.total `devices_exclusions` host=* by metric_name, path span=1d
+| eval {metric_name}=value
+| stats first(disk.used) as disk.used, first(disk.total) as disk.total by _time, path
+| stats sum(disk.used) as used, sum(disk.total) as total by _time
+| eval total=round((((total / 1024) / 1024) / 1024),2), used=round((((used / 1024) / 1024) / 1024),2)
+| timechart span="1d" perc95(used) AS storage_used latest(total) as total
+| predict storage_used As predict algorithm=LLP5 holdback=0 future_timespan=120
+| filldown total
+| foreach *
+[ eval &lt;&lt;FIELD&gt;&gt; = round('&lt;&lt;FIELD&gt;&gt;', 2) ]
+          </query>
+          <earliest>-30d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <!--  <option name="charting.axisLabelsX.majorLabelVisibility">hide</option> -->
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.legend.placement">top</option>
+        <option name="refresh.time.visible">false</option>
+        <option name="charting.fieldColors">{"blocks": 0xFF0000, "predict": 0x9d0eaf}</option>
+        <option name="height">500</option>
+    </chart>
+</panel>

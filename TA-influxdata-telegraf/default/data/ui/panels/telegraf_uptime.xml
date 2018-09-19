@@ -1,0 +1,87 @@
+
+<panel>
+    <search id="GlobalSearch">
+        <query>| mstats latest(_value) as uptime where `telegraf_index` metric_name=system.uptime host=*
+| eval now=now()
+| sort host
+| eval "Date of last system startup (mm/dd/Y HH:MM)"=strftime((now()-uptime), "%m/%d/%Y %H:%M")
+| eval "uptime (human duration)"=tostring(uptime, "duration")
+| fields uptime,"uptime (human duration)","Date of last system startup (mm/dd/Y HH:MM)"
+| rename uptime AS "uptime (in seconds)"</query>
+        <earliest>-60m</earliest>
+        <latest>now</latest>
+    </search>
+    <single>
+        <search base="GlobalSearch">
+            <query>fields "Date of last system startup (mm/dd/Y HH:MM)"</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="trendInterval">auto</option>
+        <option name="underLabel">LAST SYSTEM STARTUP DATE</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+    </single>
+    <single>
+        <search base="GlobalSearch">
+            <query>fields "uptime (human duration)"</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="trendInterval">auto</option>
+        <option name="underLabel">LAST UPTIME DURATION (dd:HH:MM:SS)</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+    </single>
+    <chart>
+        <search>
+            <query>| mstats latest(_value) as uptime where `telegraf_index` metric_name=system.uptime host=* span=1m
+| eval uptime=(uptime/86400)
+| timechart minspan=1m bins=1000 latest(uptime) as uptime</query>
+            <earliest>-1y@d</earliest>
+            <latest>now</latest>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.text">Days</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.text">uptime in days</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="height">400</option>
+    </chart>
+</panel>

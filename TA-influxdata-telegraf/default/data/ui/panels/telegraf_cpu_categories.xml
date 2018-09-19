@@ -1,0 +1,25 @@
+<panel>
+  <chart>
+    <title>CPU Usage by category</title>
+    <search>
+      <query>
+| mstats avg(_value) as value where `telegraf_index` metric_name=cpu.usage_iowait OR metric_name=cpu.usage_steel OR metric_name=cpu.usage_system OR metric_name=cpu.usage_user OR metric_name=cpu.usage_idle host=* by metric_name span=1s
+| eval {metric_name}=value
+| stats first(cpu.*) as "cpu.*" by _time
+| timechart minspan=1m bins=1000 avg(cpu.usage_*) AS "avg cpu * %"
+      </query>
+      <earliest>$earliest$</earliest>
+      <latest>$latest$</latest>
+    </search>
+    <option name="charting.chart">area</option>
+   <!--  <option name="charting.axisLabelsX.majorLabelVisibility">hide</option> -->
+    <option name="charting.axisTitleX.visibility">collapsed</option>
+    <option name="charting.axisY.maximumNumber">100</option>
+    <option name="charting.axisTitleY.visibility">collapsed</option>
+    <option name="charting.chart.nullValueMode">gaps</option>
+    <option name="charting.chart.showDataLabels">none</option>
+    <option name="charting.legend.placement">top</option>
+    <option name="refresh.time.visible">false</option>
+    <option name="charting.chart.stackMode">stacked</option>
+  </chart>
+</panel>

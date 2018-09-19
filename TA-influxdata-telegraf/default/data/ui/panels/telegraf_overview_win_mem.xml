@@ -1,0 +1,48 @@
+<panel>
+  <chart>
+    <title>Memory available (MB)</title>
+    <search>
+      <query>| mstats avg(_value) as Available_Bytes where `telegraf_index` metric_name="win_mem.Available_Bytes" host=* span=1s
+| eval Available_Bytes = Available_Bytes/1048567
+| timechart minspan=1m bins=1000 avg(Available_Bytes) as Available_Bytes
+| append [ | mstats avg(_value) as used_percent where `telegraf_index` metric_name=mem.used_percent host=* by metric_name span=1s
+| timechart minspan=1m bins=1000 avg(used_percent) AS "mem used (%)" ]
+      </query>
+      <earliest>$earliest$</earliest>
+      <latest>$latest$</latest>
+    </search>
+    <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+    <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+    <option name="charting.axisTitleX.visibility">visible</option>
+    <option name="charting.axisTitleY.visibility">visible</option>
+    <option name="charting.axisTitleY2.visibility">visible</option>
+    <option name="charting.axisX.abbreviation">none</option>
+    <option name="charting.axisX.scale">linear</option>
+    <option name="charting.axisY.abbreviation">none</option>
+    <option name="charting.axisY.scale">linear</option>
+    <option name="charting.axisY2.abbreviation">none</option>
+    <option name="charting.axisY2.enabled">1</option>
+    <option name="charting.axisY2.scale">inherit</option>
+    <option name="charting.chart">area</option>
+    <option name="charting.chart.bubbleMaximumSize">50</option>
+    <option name="charting.chart.bubbleMinimumSize">10</option>
+    <option name="charting.chart.bubbleSizeBy">area</option>
+    <option name="charting.chart.nullValueMode">gaps</option>
+    <option name="charting.chart.overlayFields">"mem used (%)"</option>
+    <option name="charting.chart.showDataLabels">none</option>
+    <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+    <option name="charting.chart.stackMode">default</option>
+    <option name="charting.chart.style">shiny</option>
+    <option name="charting.drilldown">none</option>
+    <option name="charting.fieldColors">{"mem used (%)": 0xe50000}</option>
+    <option name="charting.layout.splitSeries">0</option>
+    <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+    <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+    <option name="charting.legend.mode">standard</option>
+    <option name="charting.legend.placement">top</option>
+    <option name="charting.lineWidth">2</option>
+    <option name="trellis.enabled">0</option>
+    <option name="trellis.scales.shared">1</option>
+    <option name="trellis.size">medium</option>
+  </chart>
+</panel>

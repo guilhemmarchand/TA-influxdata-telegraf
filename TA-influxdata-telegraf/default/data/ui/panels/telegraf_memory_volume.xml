@@ -1,0 +1,43 @@
+<panel>
+  <chart>
+    <title>Memory used/available (GB)</title>
+    <search>
+      <query>
+| mstats avg(_value) as value where `telegraf_index` metric_name=mem.cached OR metric_name=mem.buffered OR metric_name=mem.free OR metric_name=mem.used OR metric_name=mem.total host=* by metric_name span=1s
+| eval {metric_name}=value
+| stats first(mem.*) as "mem.*" by _time
+| foreach mem.* [ eval &lt;&lt;FIELD&gt;&gt; = '&lt;&lt;FIELD&gt;&gt;'/1073741824 ]
+| timechart minspan=1m bins=1000 avg(mem.*) AS "*" | where isnotnull(total)
+      </query>
+      <earliest>$earliest$</earliest>
+      <latest>$latest$</latest>
+    </search>
+    <option name="charting.axisTitleX.visibility">collapsed</option>
+    <option name="charting.axisTitleY.visibility">collapsed</option>
+    <option name="charting.axisX.scale">linear</option>
+    <option name="charting.axisY.scale">linear</option>
+    <option name="charting.chart">area</option>
+    <option name="charting.chart.nullValueMode">connect</option>
+    <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+    <option name="charting.chart.stackMode">stacked</option>
+    <option name="charting.chart.style">shiny</option>
+    <option name="charting.drilldown">all</option>
+    <option name="charting.layout.splitSeries">0</option>
+    <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+    <option name="charting.legend.placement">bottom</option>
+    <option name="charting.axisY.minimumNumber">0</option>
+    <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+    <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+    <option name="charting.axisTitleY2.visibility">visible</option>
+    <option name="charting.axisY2.enabled">0</option>
+    <option name="charting.axisY2.scale">inherit</option>
+    <option name="charting.chart.bubbleMaximumSize">50</option>
+    <option name="charting.chart.bubbleMinimumSize">10</option>
+    <option name="charting.chart.bubbleSizeBy">area</option>
+    <option name="charting.chart.overlayFields">total</option>
+    <option name="charting.chart.showDataLabels">none</option>
+    <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+    <option name="charting.fieldColors">{"total": 0xe50000}</option>
+    <option name="refresh.display">none</option>
+  </chart>
+</panel>

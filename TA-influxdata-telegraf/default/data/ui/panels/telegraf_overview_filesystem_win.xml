@@ -1,0 +1,21 @@
+<panel>
+    <table>
+        <title>file-systems usage</title>
+        <search>
+            <query>| mstats latest(_value) as value where `telegraf_index` metric_name=win_disk.Percent_Free_Space OR metric_name=win_disk.Free_Megabytes host=* by metric_name, instance
+| eval {metric_name}=value
+| stats first(win_disk.*) as "*" by instance
+| eval Percent_Free_Space=round(Percent_Free_Space, 2), "disk total (GB)"=round((Free_Megabytes/Percent_Free_Space)*100/1024, 2), "disk free (GB)"=round(Free_Megabytes/1024, 2)
+| rename Percent_Free_Space as "disk free (%)"
+| fields instance, "disk free (GB)", "disk free (%)", "disk total (GB)"
+| sort 0 instance</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="count">10</option>
+    </table>
+</panel>

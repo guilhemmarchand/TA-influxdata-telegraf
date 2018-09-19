@@ -1,0 +1,22 @@
+<panel>
+  <chart>
+    <title>Percent_User_Time</title>
+    <search>
+      <query>
+| mstats avg(_value) as value where `telegraf_index` metric_name="win_cpu.Percent_User_Time" host=* span=1s
+| timechart minspan=1m bins=1000 avg(value) AS "user_time %"
+      </query>
+      <earliest>$earliest$</earliest>
+      <latest>$latest$</latest>
+    </search>
+    <option name="charting.chart">line</option>
+   <!--  <option name="charting.axisLabelsX.majorLabelVisibility">hide</option> -->
+    <option name="charting.axisTitleX.visibility">collapsed</option>
+    <option name="charting.axisY.maximumNumber">100</option>
+    <option name="charting.axisTitleY.visibility">collapsed</option>
+    <option name="charting.chart.nullValueMode">gaps</option>
+    <option name="charting.chart.showDataLabels">none</option>
+    <option name="charting.legend.placement">none</option>
+    <option name="refresh.time.visible">false</option>
+  </chart>
+</panel>

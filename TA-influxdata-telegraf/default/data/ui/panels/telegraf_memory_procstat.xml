@@ -1,0 +1,23 @@
+<panel>
+  <chart>
+    <title>Processes - Resident Memory (MB, top 20)</title>
+    <search>
+      <query>
+| mstats avg(_value) as memory_rss where `telegraf_index` metric_name=procstat.memory_rss host=* by process_name span=1s
+| eval memory_rss=memory_rss/1000000
+| timechart useother=f limit=20 minspan=1m bins=1000 avg(memory_rss) AS "memory_rss " by process_name
+      </query>
+      <earliest>$earliest$</earliest>
+      <latest>$latest$</latest>
+    </search>
+    <option name="charting.chart">area</option>
+   <!--  <option name="charting.axisLabelsX.majorLabelVisibility">hide</option> -->
+    <option name="charting.axisTitleX.visibility">collapsed</option>
+    <option name="charting.axisTitleY.visibility">collapsed</option>
+    <option name="charting.chart.nullValueMode">gaps</option>
+    <option name="charting.chart.showDataLabels">none</option>
+    <option name="charting.legend.placement">top</option>
+    <option name="refresh.time.visible">false</option>
+    <option name="charting.chart.stackMode">stacked</option>
+  </chart>
+</panel>

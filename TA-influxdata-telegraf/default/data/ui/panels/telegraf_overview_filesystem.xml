@@ -1,0 +1,21 @@
+<panel>
+    <table>
+        <title>file-systems usage</title>
+        <search>
+            <query>| mstats latest(_value) as value where index="telegraf" metric_name=disk.used OR metric_name=disk.total OR metric_name=disk.used_percent `devices_exclusions` host=* by metric_name, path
+| eval {metric_name}=value
+| stats first(disk.*) as "disk.*" by path
+| eval "disk.total"=round(((('disk.total' / 1024) / 1024) / 1024),2), "disk.used"=round(((('disk.used' / 1024) / 1024) / 1024),2), "disk.used_percent"=round('disk.used_percent',2)
+| rename disk.used as "disk used (GB)", disk.total as "disk total (GB)", disk.used_percent as "disk used (%)"
+| fields path, "disk used (GB)", "disk total (GB)", "disk used (%)"
+| sort 0 device</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="count">10</option>
+    </table>
+</panel>

@@ -1,0 +1,44 @@
+<panel>
+  <chart>
+    <title>Network inbound/outbound traffic (KBps)</title>
+    <search>
+      <query>
+| mstats latest(_value) as value where `telegraf_index` metric_name=net.bytes_recv OR metric_name=net.bytes_sent host=* by metric_name, interface span=1s
+| eval {metric_name}=value
+| stats first(net.*) as "*_counter" by _time, interface
+| streamstats current=f last(*_counter) as "*_prev" by interface
+| eval inbound=((bytes_recv_counter-bytes_recv_prev)/1024), outbound=((bytes_sent_counter-bytes_sent_prev)/1024)
+| fields _time, interface, inbound, outbound
+| where NOT (inbound&lt;0) AND NOT (outbound&lt;0)
+| timechart minspan=1m bins=1000 avg(inbound) as inbound, avg(outbound) as outbound | eval outbound = "-" . outbound
+      </query>
+      <earliest>$earliest$</earliest>
+      <latest>$latest$</latest>
+    </search>
+    <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+    <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+    <option name="charting.axisTitleX.visibility">collapsed</option>
+    <option name="charting.axisTitleY.text">KBps</option>
+    <option name="charting.axisTitleY.visibility">visible</option>
+    <option name="charting.axisTitleY2.visibility">visible</option>
+    <option name="charting.axisX.scale">linear</option>
+    <option name="charting.axisY.scale">linear</option>
+    <option name="charting.axisY2.enabled">0</option>
+    <option name="charting.axisY2.scale">inherit</option>
+    <option name="charting.chart">area</option>
+    <option name="charting.chart.bubbleMaximumSize">50</option>
+    <option name="charting.chart.bubbleMinimumSize">10</option>
+    <option name="charting.chart.bubbleSizeBy">area</option>
+    <option name="charting.chart.nullValueMode">gaps</option>
+    <option name="charting.chart.showDataLabels">none</option>
+    <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+    <option name="charting.chart.stackMode">default</option>
+    <option name="charting.chart.style">shiny</option>
+    <option name="charting.drilldown">all</option>
+    <option name="charting.fieldColors">{"inbound": 0xBDBD5E, "outbound": 0x5F7396}</option>
+    <option name="charting.layout.splitSeries">0</option>
+    <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+    <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+    <option name="charting.legend.placement">top</option>
+  </chart>
+</panel>
