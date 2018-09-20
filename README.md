@@ -255,7 +255,7 @@ Push this configuration to your Telegraf agents, et voila.
 Check data availability in Splunk:
 
 ```
-| mstats values(_dims) as dimensions values(metric_name) as metric_name where index=telegraf metric_name=*
+| mcatalog values(_dims) as dimensions values(metric_name) as metric_name where index=telegraf metric_name=*
 ```
 
 ```
@@ -327,7 +327,7 @@ Push this configuration to your Telegraf agents, et voila.
 Check data availability in Splunk:
 
 ```
-| mstats values(_dims) as dimensions values(metric_name) as metric_name where index=telegraf metric_name=*
+| mcatalog values(_dims) as dimensions values(metric_name) as metric_name where index=telegraf metric_name=*
 ```
 
 ```
@@ -449,6 +449,6 @@ Et voila. Congratulations, you have built a massively scalable, distributable, o
 Check data availability in Splunk:
 
 ```
-| mstats values(_dims) as dimensions values(metric_name) as metric_name where index=telegraf metric_name=*
+| mcatalog values(_dims) as dimensions values(metric_name) as metric_name where index=telegraf metric_name=*
 
 ```
