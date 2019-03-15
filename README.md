@@ -1,4 +1,8 @@
 
+| branch | build status |
+| ---    | ---          |
+| master | [![master status](https://circleci.com/gh/guilhemmarchand/TA-influxdata-telegraf/tree/master.svg?style=svg)](https://circleci.com/gh/guilhemmarchand/TA-influxdata-telegraf/tree/master)
+
 ```
  ___        __ _               _       _
 |_ _|_ __  / _| |_   ___  ____| | __ _| |_ __ _ 
